@@ -28,6 +28,15 @@
 	}
 	:return ($MtmUtilTools->"packs");
 }
+:set ($s->"getTypes") do={
+	:global MtmUtilTools;
+	:if ([:typeof ($MtmUtilTools->"types")] = "nothing") do={
+		:global MtmAuto;
+		:local mVal ([($MtmAuto->"getEnv") "mtm.utils.root.path"]."/Facts/Tools/Types.rsc");
+		:set mVal [($MtmAuto->"importFile") $mVal];
+	}
+	:return ($MtmUtilTools->"types");
+}
 :global MtmUtilTools;
 :set MtmUtilTools [:toarray ""];
 

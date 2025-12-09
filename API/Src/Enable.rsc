@@ -18,7 +18,6 @@
 	}
 	:global MtmAuto;
 	
-
 	##Load this APP
 	:local hintFile "mtmUtilitiesRoot.hint";
 	:set mVal [/file/find name~$hintFile];
