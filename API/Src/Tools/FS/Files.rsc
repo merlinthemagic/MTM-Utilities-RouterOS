@@ -74,13 +74,17 @@
 	:if ([:typeof $0] != "str") do={
 		:error ($cPath.": Input has invalid type '".[:typeof $0]."'");
 	}
-	:local mVal "";
+	:local mThrow true;
+	:if ([:typeof $1] = "bool") do={
+		:set mThrow $1;
+	}
 	
+	:local mVal "";
 	:global MtmUtilFS;
 	:local self ($MtmUtilFS->"files");
 	
 	:if ([($self->"getExists") $0] = false) do={
-		:set mVal [/file/print file=$0];
+		:set mVal [/file/add name=$0];
 		##wait for the file to be created
 		:if ([($self->"getExists") $0 (1500)] = false) do={
 			:error ($cPath.": Failed to create file: '".$0."'");
@@ -88,7 +92,11 @@
 		##empty the new file
 		:set mVal [($self->"setContent") $0 ""];
 	} else={
-		:error ($cPath.": Cannot create, file exists '".$0."'");
+		:if ($mThrow = true) do={
+			:error ($cPath.": Cannot create, file exists '".$0."'");
+		} else={
+			:return false;
+		}
 	}
 	:return true;
 }

@@ -22,7 +22,10 @@
 		:global MtmUtils;
 		:return [($MtmAuto->"get") $0 ($MtmUtils)];
 	}
-
+	:set ($s->"getCachePath") do={
+		##ram based dir for temp items
+		:return "mtmCache/";
+	}
 	##factories
 	:set ($s->"getTools") do={
 		:global MtmUtilFacts;

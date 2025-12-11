@@ -40,6 +40,9 @@
 	:local mKey "mtmConcatFile";
 	:local lKey [($lockTool->"lock") $mKey (10) (3)];
 	
+	##create output file, it might be in a dir
+	:set mVal [($fileTool->"create") $1];
+	
 	:do {
 		:set mVal [:execute script=$scr file=$1];
 		:return true;
