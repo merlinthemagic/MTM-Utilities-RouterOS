@@ -55,7 +55,7 @@
 				:set ($MtmUtilMutex->$lName);
 			} else={
 				:if ($tTime > $cTime) do={
-					:delay 0.2s;
+					:delay 0.25s; ##lower makes very little differance
 					:set cTime [($timeTool->"getCurrent")];
 				} else={
 					:set isDone true;
@@ -93,14 +93,12 @@
 	}
 
 	:global MtmUtilMutex;
-	:global MtmUtils;
-
 	:local lock ($MtmUtilMutex->$0);
 	:if ([:typeof $lock] != "nothing") do={
-		
-		:local timeTool [($MtmUtils->"get") "getTools()->getTime()->getEpoch()"];
-		:local cTime [($timeTool->"getCurrent")];
 	
+		:global MtmUtils;	
+		:local cTime [($MtmUtils->"get") "getTools()->getTime()->getEpoch()->getCurrent()"];
+
 		:if ($1 != ($lock->"key")) do={
 			:error ($cPath.": Failed to extend lock name '".$0."' key does not match");
 		}

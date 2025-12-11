@@ -37,6 +37,16 @@
 	}
 	:return ($MtmUtilTools->"types");
 }
+:set ($s->"getFS") do={
+	##file system
+	:global MtmUtilTools;
+	:if ([:typeof ($MtmUtilTools->"fs")] = "nothing") do={
+		:global MtmAuto;
+		:local mVal ([($MtmAuto->"getEnv") "mtm.utils.root.path"]."/Facts/Tools/FS.rsc");
+		:set mVal [($MtmAuto->"importFile") $mVal];
+	}
+	:return ($MtmUtilTools->"fs");
+}
 :global MtmUtilTools;
 :set MtmUtilTools [:toarray ""];
 
