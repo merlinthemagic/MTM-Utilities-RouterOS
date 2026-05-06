@@ -147,6 +147,21 @@
 	}
 	:return true;
 }
+:set ($s->"remove") do={
+	
+	##does not care if we have a valid key
+	:local cPath "MTM/Utilities/Tools/Concurrency/Mutex.rsc/remove";
+	:if ([:typeof $0] != "str"  || [:len $0] < 1) do={
+		:error ($cPath.": Input lock name invalid type '".[:typeof $0]."'");
+	}
+
+	:global MtmUtilMutex;
+	:local lock ($MtmUtilMutex->$0);
+	:if ([:typeof $lock] != "nothing") do={
+		:set ($MtmUtilMutex->$0);
+	}
+	:return true;
+}
 
 :global MtmUtilMutex;
 :set MtmUtilMutex [:toarray ""];
