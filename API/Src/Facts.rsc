@@ -36,6 +36,16 @@
 		}
 		:return ($MtmUtilFacts->"tools");
 	}
+	:set ($s->"getFiles") do={
+		:global MtmUtilFacts;
+		:if ([:typeof ($MtmUtilFacts->"files")] = "nothing") do={
+			:global MtmAuto;
+			:local mVal ([($MtmAuto->"getEnv") "mtm.utils.root.path"]."/Facts/Files.rsc");
+			:set mVal [($MtmAuto->"importFile") $mVal];
+		}
+		:return ($MtmUtilFacts->"files");
+	}
+	
 	
 	:set MtmUtils $s;
 }
