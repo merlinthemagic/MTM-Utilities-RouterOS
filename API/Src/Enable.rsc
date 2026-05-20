@@ -1,12 +1,15 @@
+
 :local cPath "MTM/Utilities/Enable.rsc";
-:local mVal "";
 
 :global MtmUtilsLoaded;
-:if ($MtmUtilsLoaded != true) do={
+:if ([:typeof $MtmUtilsLoaded] = "nothing") do={
 	:global MtmUtilsLoaded false;
 	
 	##Load Dependencies
-	:local hintFiles [:toarray "mtmAutoRoot.hint"];
+	:local mVal "";
+	:local mNull "";
+	:local appRoot "";
+	:local hintFiles [:toarray "mtmAutoRoot.hint,mtmUtilitiesRoot.hint"];
 	:foreach hintFile in=$hintFiles do={
 		:set mVal [/file/find name~$hintFile];
 		:if ([:len $mVal] != 1) do={
@@ -14,20 +17,16 @@
 			:error ($cPath.": Hint file: '".$hintFile."' is invalid");
 		}
 		:set mVal [/file/get $mVal name];
-		:set mVal [/import file-name=([:pick $mVal 0 ([:len $mVal] - (([:len $hintFile]) + 1))]."/Enable.rsc") verbose=no];
+		:set mVal [:pick $mVal 0 ([:len $mVal] - (([:len $hintFile]) + 1))]; ##Root path
+
+		:if ($hintFile = "mtmUtilitiesRoot.hint") do={
+			:global MtmAuto;
+			:set appRoot $mVal;
+			:set mVal [($MtmAuto->"importFile") ($appRoot."/Facts.rsc")];
+		} else={
+			:set mNull [/import file-name=($mVal."/Enable.rsc") verbose=no];
+		}
 	}
-	:global MtmAuto;
-	
-	##Load this APP
-	:local hintFile "mtmUtilitiesRoot.hint";
-	:set mVal [/file/find name~$hintFile];
-	:if ([:len $mVal] != 1) do={
-		:set mVal [/system/script/environment/remove [find where name="MtmUtilsLoaded"]];
-		:error ($cPath.": Hint file: '".$hintFile."' is invalid");
-	}
-	:set mVal [/file/get $mVal name];
-	:local rootPath [:pick $mVal 0 ([:len $mVal] - (([:len $hintFile]) + 1))];
-	:set mVal [($MtmAuto->"importFile") ($rootPath."/Facts.rsc")];
 
 	:global MtmUtils;
 	:if ([:typeof $MtmUtils] = "nothing") do={
@@ -36,13 +35,28 @@
 	}
 
 	##load the environment
-	:set mVal [($MtmAuto->"setEnv") "mtm.utils.root.path" $rootPath];
-	:foreach id in=[/file/find where name~("^".$rootPath."/Envs/")] do={
+	:global MtmAuto;
+	:set mVal [($MtmAuto->"setEnv") "mtm.utils.root.path" $appRoot];
+	:foreach id in=[/file/find where name~("^".$appRoot."/Envs/")] do={
 		:set mVal [($MtmAuto->"loadEnvFile") ([/file/get $id name]) (true)];
 	}
 
 	:global MtmUtilsLoaded true;
 	
 } else={
-	#MTM Utilities is already loaded
+	#App is already loaded or being loaded
+	:if ($MtmUtilsLoaded = false) do={
+		##another process is loading this Enable.rsc
+		:for i from=0 to=20 do={
+			:global MtmUtilsLoaded;
+			:if ($MtmUtilsLoaded = true) do={
+				:break;
+			} else={
+				:delay 0.5s;
+			}
+		}
+		:if ($MtmUtilsLoaded != true) do={
+			:error ($cPath.": Failed to load while waiting");
+		}
+	}
 }

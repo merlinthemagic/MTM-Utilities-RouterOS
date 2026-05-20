@@ -3,7 +3,6 @@
 
 :global MtmUtilsLoaded;
 :if ([:typeof $MtmUtilsLoaded] = "nothing") do={
-	##Load the Enable.rsc file before using Facts
 	:error ($cPath.": Please load Enable.rsc before using the factory");
 }
 
