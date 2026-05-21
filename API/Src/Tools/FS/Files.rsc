@@ -40,6 +40,7 @@
 	:local isDone false;
 	:local max 50;
 	:local cur 0;
+	:local tmpDir "mtmTmpFiles";
 	:local fileName "";
 	:local mVal "";
 	
@@ -49,7 +50,7 @@
 	
 	:while ($isDone = false) do={
 		
-		:set fileName ([($strTool->"getRandom") (12)].".txt");
+		:set fileName ($tmpDir."/".[($strTool->"getRandom") (12)].".txt");
 		:if ([($self->"getExists") $fileName] = false) do={
 			:do {
 				:set mVal [($self->"create") $fileName];
