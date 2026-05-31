@@ -21,7 +21,7 @@
 ### getTemp:
 
 ```
-:local fileName [($toolObj->"getTemp")]; ##filename as string
+:local fileName [($toolObj->"getTemp")]; ##filename as string e.g. mtmTmpFiles/73c7f7d1a724.txt
 
 ```
 
